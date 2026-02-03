@@ -1,0 +1,8 @@
+
+#:schema node_modules/wrangler/config-schema.json
+name = "savoura-archive"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "dist"
+
+[vars]
+# API keys are handled by Cloudflare environment variables in the dashboard
