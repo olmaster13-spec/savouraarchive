@@ -1,6 +1,6 @@
 const path = require("path");
 const sel = require("./selectors");
-const { launchPersistentBrowser } = require("./browserProfile");
+const { launchPersistentBrowser, bringToAttention, returnToCorner } = require("./browserProfile");
 
 class AutomationError extends Error {
   constructor(step, message) {
@@ -74,11 +74,17 @@ async function ensureLoggedIn(page, onProgress) {
   }
 
   onProgress("login-required", "Not logged in. Bringing the browser window forward — please sign in.");
-  await page.bringToFront();
+  // The window normally sits small, in a corner, out of your way. Actually
+  // move/resize it front-and-center here — bringToFront() alone only
+  // focuses the tab, it won't undo the corner position, and you'd never
+  // see a prompt to sign into.
+  await bringToAttention(page);
   try {
     await page.locator(sel.accountMenu).first().waitFor({ state: "visible", timeout: 5 * 60 * 1000 });
+    onProgress("login-required", "Signed in — continuing.");
+    await returnToCorner(page).catch(() => {});
   } catch {
-    throw new AutomationError("login", "Timed out waiting for manual sign-in (5 min). Run `npm run setup-login` once and retry.");
+    throw new AutomationError("login", "Timed out waiting for manual sign-in (5 min). Retry once you've signed in.");
   }
 }
 

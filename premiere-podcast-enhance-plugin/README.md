@@ -118,7 +118,6 @@ also means two clips with identical filenames are never ambiguous.
 cd companion-app
 npm install
 npx playwright install chromium   # one-time, downloads the automation's browser
-npm run setup-login                # opens a real (visible) browser window — sign into Adobe, then it closes itself
 npm start                          # runs in the background / system tray from now on
 ```
 The companion app lives in your tray/menu bar. Right-click it to see
@@ -126,6 +125,17 @@ connection status, change the shortcut, re-run login setup, or quit.
 Default shortcut: `Ctrl/Cmd+Shift+E` (change it in
 `companion-app/src/lib/settingsStore.js` → `hotkey`, or via the tray menu
 once wired to a settings UI — v1 ships with the config-file route).
+
+**Logging into Adobe:** you don't need a separate setup step. The
+automation runs in its own small, real (not headless) Chromium window that
+normally sits tucked in a corner of your screen, out of the way. The first
+time it needs to talk to `podcast.adobe.com` and finds you're not logged
+in — or any time your session expires later — it pauses the job, moves
+that window front-and-center so you can't miss it, and waits for you to
+sign in by hand, right then, the same as you would in any browser. Once
+you're in, it shrinks back to its corner and the job continues. If you'd
+rather get login out of the way ahead of time instead of mid-job, run
+`npm run setup-login`, which does the same thing standalone.
 
 ### 2. Export preset (one-time)
 The audio export step needs a Premiere `.epr` preset — see
@@ -186,9 +196,12 @@ Ranked by how likely they are to actually bite you:
    this first (open the UDT console and inspect `require("premierepro")`
    to confirm the real method names).
 3. **Login expiring.** Adobe sessions can time out. The automation detects
-   "not logged in," brings the browser window forward, and waits — but if
-   it's backgrounded/off-screen you may not notice. Re-run
-   `npm run setup-login` periodically or if a job hangs at the login step.
+   "not logged in," moves the browser window front-and-center, and waits up
+   to 5 minutes for you to sign in by hand — if a job seems stuck, that's
+   the most likely reason, so check for the window (it may have popped up
+   behind Premiere rather than in front of it, depending on your OS's
+   focus-stealing rules). `npm run setup-login` does the same thing
+   standalone if you'd rather handle it outside of a real job.
 4. **Bot detection / CAPTCHA.** The site already blocks plain automated
    HTTP fetches (confirmed during this plugin's own research — every
    non-browser fetch to `podcast.adobe.com` came back 403). A real,
@@ -266,7 +279,7 @@ companion-app/                Background tray app
     lib/settingsStore.js     hotkey, presets, last-used params
     windows/params/          the small dedicated parameters window (HTML/JS)
   scripts/
-    setup-login.js           one-time manual Adobe login
+    setup-login.js           optional standalone Adobe login (also happens inline on first use)
     capture-selectors.js     re-record selectors when the site changes
 ```
 
