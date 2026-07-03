@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const sel = require("./selectors");
 const { launchPersistentBrowser, bringToAttention, returnToCorner } = require("./browserProfile");
 
@@ -17,10 +18,13 @@ class AutomationError extends Error {
  * @param {object} opts
  * @param {string} opts.inputPath - local audio file to upload
  * @param {string} opts.outputDir - directory to save the downloaded result into
+ * @param {string} [opts.outputBaseName] - filename (no extension) to base the
+ *   saved result on, e.g. the original clip's name. Falls back to inputPath's
+ *   own name if omitted.
  * @param {{strength:number, speech:number, noise:number, music:number}} opts.params
  * @param {(stage: string, message: string) => void} opts.onProgress
  */
-async function enhance({ inputPath, outputDir, params, onProgress = () => {} }) {
+async function enhance({ inputPath, outputDir, outputBaseName, params, onProgress = () => {} }) {
   const context = await launchPersistentBrowser();
   const page = await context.newPage();
 
@@ -40,7 +44,8 @@ async function enhance({ inputPath, outputDir, params, onProgress = () => {} }) 
     await waitForProcessingComplete(page);
 
     onProgress("downloading", "Downloading enhanced audio…");
-    const downloadedPath = await downloadResult(page, outputDir, inputPath);
+    const baseName = sanitizeBaseName(outputBaseName || path.parse(inputPath).name);
+    const downloadedPath = await downloadResult(page, outputDir, baseName);
 
     onProgress("done", "Enhanced audio downloaded.");
     return downloadedPath;
@@ -170,7 +175,7 @@ async function waitForProcessingComplete(page) {
   }
 }
 
-async function downloadResult(page, outputDir, inputPath) {
+async function downloadResult(page, outputDir, baseName) {
   const downloadBtn = page.locator(sel.downloadButton).first();
   const [download] = await Promise.all([
     page.waitForEvent("download", { timeout: 60000 }).catch((err) => {
@@ -179,13 +184,28 @@ async function downloadResult(page, outputDir, inputPath) {
     downloadBtn.click(),
   ]);
 
-  const base = path.parse(inputPath).name;
   const suggested = download.suggestedFilename();
   const ext = path.extname(suggested) || ".wav";
-  const destPath = path.join(outputDir, `${base}-enhanced${ext}`);
+  const destPath = uniquePath(outputDir, `${baseName}-enhanced`, ext);
 
   await download.saveAs(destPath);
   return destPath;
+}
+
+function sanitizeBaseName(name) {
+  return name.replace(/[/\\?%*:|"<>]/g, "_").trim() || "clip";
+}
+
+/** Avoids clobbering a file from a previous run on the same clip by
+ * appending "-2", "-3", etc. until the path is free. */
+function uniquePath(dir, baseName, ext) {
+  let candidate = path.join(dir, `${baseName}${ext}`);
+  let n = 2;
+  while (fs.existsSync(candidate)) {
+    candidate = path.join(dir, `${baseName}-${n}${ext}`);
+    n += 1;
+  }
+  return candidate;
 }
 
 module.exports = { enhance, AutomationError };

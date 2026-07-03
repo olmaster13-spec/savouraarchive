@@ -3,7 +3,7 @@ const Store = require("electron-store");
 const store = new Store({
   name: "podcast-enhance-settings",
   defaults: {
-    hotkey: "CommandOrControl+Shift+E",
+    hotkey: "CommandOrControl+Shift+P",
     wsPort: 8934,
     lastUsedParams: { strength: 50, speech: 100, noise: 0, music: 0 },
     presets: {},

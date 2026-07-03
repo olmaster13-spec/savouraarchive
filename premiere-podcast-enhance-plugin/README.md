@@ -81,7 +81,11 @@ independent of Premiere's own window/panel management.
    settings.
 4. On confirm, companion app drives a persistent, already-logged-in
    Chromium profile through Adobe Podcast's Enhance Speech flow, streaming
-   status back to the window (Uploading… / Processing… / Downloading…).
+   status back to the window (Uploading… / Processing… / Downloading…). The
+   downloaded result is saved as `<original filename>-enhanced.<ext>` in
+   the same folder as the original clip's source media (falling back to a
+   temp folder if that clip has no linked file on disk, or its folder
+   isn't writable — logged loudly either way, never a silent switch).
 5. Resulting file path goes back to the UXP panel, which imports it into a
    "Podcast Enhance" bin and, by default, repoints the original clip's
    project item to the enhanced file via `changeMediaPath()` — this
@@ -122,9 +126,16 @@ npm start                          # runs in the background / system tray from n
 ```
 The companion app lives in your tray/menu bar. Right-click it to see
 connection status, change the shortcut, re-run login setup, or quit.
-Default shortcut: `Ctrl/Cmd+Shift+E` (change it in
+Default shortcut: `Ctrl/Cmd+Shift+P` (change it in
 `companion-app/src/lib/settingsStore.js` → `hotkey`, or via the tray menu
-once wired to a settings UI — v1 ships with the config-file route).
+once wired to a settings UI — v1 ships with the config-file route). Note
+that `Cmd/Ctrl+Shift+P` is a "command palette" shortcut in several other
+apps (VS Code, Slack, etc.) — those are in-app bindings, not OS-level
+global ones, so they normally don't conflict with this being a true global
+hotkey, but if something else on your system *does* register it globally
+first, `globalShortcut.register()` fails and the companion app logs
+`Failed to register global shortcut` rather than pretending it worked —
+check the terminal/tray tooltip if the shortcut seems to do nothing.
 
 **Logging into Adobe:** you don't need a separate setup step. The
 automation runs in its own small, real (not headless) Chromium window that

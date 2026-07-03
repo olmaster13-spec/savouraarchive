@@ -79,7 +79,11 @@ class Orchestrator {
     const jobId = selectionMsg.jobId;
     const clipName = selectionMsg.clip.name;
     this.windowManager.trackJob(jobId);
-    jobStore.upsert(jobId, { status: "exporting", clipName });
+    jobStore.upsert(jobId, {
+      status: "exporting",
+      clipName,
+      originalMediaPath: selectionMsg.clip.mediaPath || null,
+    });
 
     await this.runJob(jobId, clipName);
   }
@@ -89,7 +93,7 @@ class Orchestrator {
     this.windowManager.trackJob(jobId);
     const job = jobStore.get(jobId) || { clipName };
     const exportedPath = job.exportedPath || path.join(TMP_DIR, `${jobId}.wav`);
-    const enhancedOutDir = TMP_DIR;
+    const enhancedOutDir = await this._resolveEnhancedOutDir(jobId, job.originalMediaPath);
 
     try {
       if (!job.exportedPath) {
@@ -125,6 +129,7 @@ class Orchestrator {
           adobePodcast.enhance({
             inputPath: exportedPath,
             outputDir: enhancedOutDir,
+            outputBaseName: path.parse(job.originalMediaPath || clipName).name,
             params,
             onProgress: (stage, message) => {
               logger.info(jobId, `automation:${stage}`, message);
@@ -150,6 +155,31 @@ class Orchestrator {
       this._notify("Podcast Enhance", `"${clipName}" imported to project.`);
     } catch (err) {
       // Already logged + surfaced to the window by _stage(); nothing further to do.
+    }
+  }
+
+  /** Enhanced files are saved next to the original clip's source media
+   * whenever possible, so they show up right where you'd look for them.
+   * Falls back to the temp dir (with a loud log line, not a silent switch)
+   * if there's no known media path or that folder isn't writable — e.g.
+   * a read-only mount, a network share without write access, or a clip
+   * with no linked file on disk. */
+  async _resolveEnhancedOutDir(jobId, originalMediaPath) {
+    if (!originalMediaPath) {
+      logger.info(jobId, "output-dir", "No source media path known — saving enhanced file to the temp folder instead.");
+      return TMP_DIR;
+    }
+    const dir = path.dirname(originalMediaPath);
+    try {
+      await fs.promises.access(dir, fs.constants.W_OK);
+      return dir;
+    } catch (err) {
+      logger.error(
+        jobId,
+        "output-dir",
+        `"${dir}" isn't writable (${err.message}) — saving enhanced file to the temp folder instead.`
+      );
+      return TMP_DIR;
     }
   }
 
