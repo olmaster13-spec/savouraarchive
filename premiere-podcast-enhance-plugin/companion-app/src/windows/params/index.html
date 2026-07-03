@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Podcast Enhance</title>
+</head>
+<body>
+  <div id="formView" class="view">
+    <h1 id="clipName">Clip</h1>
+
+    <label class="row">
+      <span>Preset</span>
+      <select id="presetSelect">
+        <option value="">Last used</option>
+      </select>
+    </label>
+
+    <label class="slider-row">
+      <span>Enhance strength <output id="strengthOut"></output>%</span>
+      <input type="range" id="strength" min="0" max="100" step="1" />
+    </label>
+
+    <fieldset class="stems">
+      <legend>Independent mix (v2, if available on your account)</legend>
+      <label class="slider-row">
+        <span>Speech <output id="speechOut"></output>%</span>
+        <input type="range" id="speech" min="0" max="100" step="1" />
+      </label>
+      <label class="slider-row">
+        <span>Noise <output id="noiseOut"></output>%</span>
+        <input type="range" id="noise" min="0" max="100" step="1" />
+      </label>
+      <label class="slider-row">
+        <span>Music <output id="musicOut"></output>%</span>
+        <input type="range" id="music" min="0" max="100" step="1" />
+      </label>
+    </fieldset>
+
+    <label class="row">
+      <input type="checkbox" id="replaceInPlace" />
+      <span>Replace clip in place on the timeline (default)</span>
+    </label>
+
+    <label class="row">
+      <span>Save as preset</span>
+      <input type="text" id="presetName" placeholder="optional name" />
+    </label>
+
+    <div class="buttons">
+      <button id="cancelBtn" class="secondary">Cancel</button>
+      <button id="confirmBtn">Enhance</button>
+    </div>
+  </div>
+
+  <div id="progressView" class="view hidden">
+    <h1 id="progressClipName">Clip</h1>
+    <div class="spinner"></div>
+    <p id="progressMessage">Working…</p>
+    <ul id="progressLog"></ul>
+  </div>
+
+  <div id="doneView" class="view hidden">
+    <h1>Imported to project</h1>
+    <p id="doneMessage"></p>
+    <div class="buttons">
+      <button id="dismissBtn">Close</button>
+    </div>
+  </div>
+
+  <div id="failedView" class="view hidden">
+    <h1>Failed</h1>
+    <p id="failedStage"></p>
+    <p id="failedMessage" class="error"></p>
+    <div class="buttons">
+      <button id="dismissFailedBtn" class="secondary">Close</button>
+      <button id="retryBtn">Retry</button>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

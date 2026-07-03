@@ -1,0 +1,20 @@
+{
+  "name": "podcast-enhance-companion",
+  "version": "1.0.0",
+  "description": "Background app that binds a global hotkey, drives Adobe Podcast Enhance Speech via a persistent logged-in browser profile, and bridges results back to the Podcast Enhance Premiere UXP plugin.",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "setup-login": "node scripts/setup-login.js",
+    "capture-selectors": "node scripts/capture-selectors.js"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "playwright": "^1.47.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}

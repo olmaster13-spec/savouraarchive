@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 12px;
+  color: #e0e0e0;
+  background: #232323;
+}
+
+.panel {
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 13px;
+  margin: 0;
+}
+
+h2 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #999;
+  margin: 12px 0 4px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-off { background: #a33; }
+.dot-on { background: #3a3; }
+
+.hint {
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.hidden { display: none; }
+
+button {
+  background: #3d5afe;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover { background: #536dfe; }
+button:disabled { background: #444; cursor: default; }
+
+#log {
+  border-top: 1px solid #3a3a3a;
+  margin-top: 12px;
+}
+
+#logList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#logList li {
+  padding: 4px 0;
+  border-bottom: 1px solid #2c2c2c;
+  color: #ccc;
+}
+
+#logList li.error { color: #ff6b6b; }
+#logList li .ts { color: #777; margin-right: 6px; }

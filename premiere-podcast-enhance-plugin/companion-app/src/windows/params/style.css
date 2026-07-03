@@ -1,0 +1,109 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 13px;
+  background: #1e1e1e;
+  color: #eee;
+}
+
+h1 {
+  font-size: 15px;
+  margin: 0 0 12px;
+}
+
+.hidden { display: none; }
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.row select, .row input[type="text"] {
+  flex: 1;
+  max-width: 60%;
+}
+
+.slider-row {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.slider-row span {
+  display: block;
+  margin-bottom: 2px;
+  color: #ccc;
+}
+
+.slider-row input[type="range"] {
+  width: 100%;
+}
+
+fieldset.stems {
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  margin: 0 0 12px;
+  padding: 8px 10px 2px;
+}
+
+fieldset.stems legend {
+  font-size: 11px;
+  color: #999;
+  padding: 0 4px;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+button {
+  flex: 1;
+  background: #3d5afe;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 9px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+button.secondary {
+  background: #3a3a3a;
+}
+
+button:hover { filter: brightness(1.1); }
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #444;
+  border-top-color: #3d5afe;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#progressLog {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  color: #999;
+  font-size: 11px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+#progressLog li { padding: 2px 0; }
+
+.error { color: #ff6b6b; }

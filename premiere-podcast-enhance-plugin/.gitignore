@@ -1,0 +1,5 @@
+node_modules/
+*.log
+companion-app/scripts/captured-actions.js
+uxp-plugin/presets/*.epr
+.DS_Store

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="panel">
+    <header>
+      <h1>Podcast Enhance</h1>
+      <span id="connDot" class="dot dot-off" title="Companion app connection"></span>
+    </header>
+
+    <section id="connectionBlock">
+      <p id="connectionMessage">Connecting to the Podcast Enhance companion app on 127.0.0.1:8934&hellip;</p>
+      <p class="hint">
+        The companion app must be running in the background for the keyboard shortcut to work.
+        See the README for install/launch instructions.
+      </p>
+    </section>
+
+    <section id="readyBlock" class="hidden">
+      <p class="hint">
+        Keep this panel open (it doesn't need focus). Select an audio clip on the timeline,
+        then use the global shortcut you configured in the companion app.
+      </p>
+      <button id="manualTriggerBtn">Enhance Selected Clip Now</button>
+    </section>
+
+    <section id="log">
+      <h2>Activity</h2>
+      <ul id="logList"></ul>
+    </section>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

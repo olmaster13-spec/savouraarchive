@@ -1,0 +1,56 @@
+{
+  "id": "com.savoura.podcastenhance",
+  "name": "Podcast Enhance Speech",
+  "version": "1.0.0",
+  "main": "index.html",
+  "manifestVersion": 5,
+  "requiredPermissions": {
+    "network": {
+      "domains": ["http://127.0.0.1:8934", "ws://127.0.0.1:8934"]
+    },
+    "launchProcess": {
+      "schemes": ["https"],
+      "extensions": [".exe"]
+    },
+    "clipboard": "readAndWrite"
+  },
+  "host": [
+    {
+      "app": "PPRO",
+      "minVersion": "24.0.0"
+    }
+  ],
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "podcastEnhancePanel",
+      "label": {
+        "default": "Podcast Enhance"
+      },
+      "minimumSize": { "width": 260, "height": 220 },
+      "maximumSize": { "width": 2000, "height": 2000 },
+      "preferredDockedSize": { "width": 320, "height": 420 },
+      "preferredFloatingSize": { "width": 320, "height": 420 },
+      "icons": [
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/icon-light.png",
+          "scale": [1, 2],
+          "theme": ["darkest", "dark", "medium", "lightest", "light"],
+          "species": "chrome"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "width": 48,
+      "height": 48,
+      "path": "icons/plugin-icon.png",
+      "scale": [1, 2],
+      "theme": ["darkest", "dark", "medium", "lightest", "light"],
+      "species": "generic"
+    }
+  ]
+}
